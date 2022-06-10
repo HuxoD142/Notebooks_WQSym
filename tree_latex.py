@@ -329,18 +329,18 @@ def tree_latex(self, colors=["red"]):
 """
 sage: for n in range(1,5):
 ....:     for p in PackedWords(n):
-....:         better_tree_latex(p)
-....:         better_tree_latex(p, "left")
-....:         better_tree_latex(p, form = "ske")
-....:         better_tree_latex(p, "left", "ske")
-....:         better_tree_latex(p, form = "ske", bicolor=True)
-....:         better_tree_latex(p, "left", "ske", bicolor=True)
+....:         script(p)
+....:         script(p, "left")
+....:         script(p, form = "ske")
+....:         script(p, "left", "ske")
+....:         script(p, form = "ske", bicolor=True)
+....:         script(p, "left", "ske", bicolor=True)
 sage: for p in PackedWords(5):
 ....:     if p.is_particular() and not p.is_particular("left"):
-....:         better_tree_latex(p)
-....:         better_tree_latex(p, "left")
+....:         script(p)
+....:         script(p, "left")
 
-sage: [better_tree_latex(p), better_tree_latex(p, "left"), better_tree_latex(p, form = "ske"), better_tree_latex(p, "left", "ske"), better_tree_latex(p, form = "ske", bicolor=True), better_tree_latex(p, "left", "ske", bicolor=True)]
+sage: [script(p), script(p, "left"), script(p, form = "ske"), script(p, "left", "ske"), script(p, form = "ske", bicolor=True), script(p, "left", "ske", bicolor=True)]
 
   sage: WQSym = algebras.WQSym(QQ)
   sage: WQSym.inject_shorthands()
@@ -355,7 +355,7 @@ sage: [better_tree_latex(p), better_tree_latex(p, "left"), better_tree_latex(p, 
 
 """
 """
-un nouveau better_tree_latex pour les tables en annexes!
+un nouveau script pour les tables en annexes!
 sage: n = 3
 sage: for p in PackedWords(n):
 ....:     RR = str(R(P[p])).replace("R[","").replace("]","")
@@ -368,31 +368,42 @@ sage: for p in PackedWords(n):
 """
 
 
-def better_tree_latex(pw, side = "", form = "", bicolor = False):
+def script(pw, side = "", form = "", bicolor = False):
     """
-    sage: better_tree_latex(PackedWord([2,3,1]))
-    sage: better_tree_latex(PackedWord([1,2,2]),"left")
-    sage: better_tree_latex(PackedWord([1,2,2]),form="ske")
-    sage: better_tree_latex(PackedWord([1,2,2]),"left", "ske")
-    sage: better_tree_latex(PackedWord([5,6,4,3,4,1,2,6]),form="ske")
-    sage: better_tree_latex(PackedWord([5,6,4,3,4,1,2,6]),"left", "ske")
-    sage: better_tree_latex(PackedWord([5,6,4,3,4,1,2,6]),form="ske", bicolor = True)
-    sage: better_tree_latex(PackedWord([5,6,4,3,4,1,2,6]),"left", "ske", bicolor=True)
-    sage: better_tree_latex(PackedWord([4,5,2,3,3,6,1,6]),form="ske")
-    sage: better_tree_latex(PackedWord([4,5,2,3,3,6,1,6]),"left", "ske")
-    sage: better_tree_latex(PackedWord([4,5,2,3,3,6,1,6]),form="ske", bicolor = True)
-    sage: better_tree_latex(PackedWord([4,5,2,3,3,6,1,6]),"left", "ske", bicolor=True)
+    sage: script(PackedWord([2,3,1]))
+    sage: script(PackedWord([1,2,2]),"left")
+    sage: script(PackedWord([1,2,2]),form="ske")
+    sage: script(PackedWord([1,2,2]),"left", "ske")
+    sage: script(PackedWord([5,6,4,3,4,1,2,6]),form="ske")
+    sage: script(PackedWord([5,6,4,3,4,1,2,6]),"left", "ske")
+    sage: script(PackedWord([5,6,4,3,4,1,2,6]),form="ske", bicolor = True)
+    sage: script(PackedWord([5,6,4,3,4,1,2,6]),"left", "ske", bicolor=True)
+    sage: script(PackedWord([4,5,2,3,3,6,1,6]),form="ske")
+    sage: script(PackedWord([4,5,2,3,3,6,1,6]),"left", "ske")
+    sage: script(PackedWord([4,5,2,3,3,6,1,6]),form="ske", bicolor = True)
+    sage: script(PackedWord([4,5,2,3,3,6,1,6]),"left", "ske", bicolor=True)
     sage: p = PackedWord([14,12,11,13,13,14,7,10,9,8,7,5,15,6,3,3,4,2,2,2,1,1,1,4,5])
-    sage: better_tree_latex(PackedWord(p),form="ske", bicolor = True)
-    sage: better_tree_latex(PackedWord(p),"left", "ske", True)
+    sage: script(PackedWord(p),form="ske", bicolor = True)
+    sage: script(PackedWord(p),"left", "ske", True)
     sage: p = PackedWord([30,30,30,29,29,29,31,28,28,31,26,32,27, 22,25,24,23,22,20,19,18,20,21,21,26, 15,14,13,15,16,17,11,10,11,12,12,17, 8,6,7,7,8,4,3,3,1,5,2,1,9,9, 33])
-    sage: better_tree_latex(PackedWord(p),form="ske", bicolor = True)
-    sage: better_tree_latex(PackedWord(p),"left", "ske", True)
+    sage: script(PackedWord(p),form="ske", bicolor = True)
+    sage: script(PackedWord(p),"left", "ske", True)
     sage: p = PackedWord([32,29,31,30,28,28,27,29,25,24,25,26,26,32, 22,20,21,21,22,23,17,16,18,18,19,23, 14,12,11,13,13,14,7,10,9,8,7,5,15,6,3,3,4,2,2,2,1,1,1,4,5, 33])
-    sage: better_tree_latex(PackedWord(p),form="ske", bicolor = True)
-    sage: better_tree_latex(PackedWord(p),"left", "ske", True)
+    sage: script(PackedWord(p),form="ske", bicolor = True)
+    sage: script(PackedWord(p),"left", "ske", True)
     """
+    # if side == "":
+    #     if len(colors) == 1:
+    #         if colors[0] in ("red"):
+    #             side = "right"
+    #         elif colors[0] in ("blue"):
+    #             side = "left"
+    #         else:
+    #             raise ValueError("colors must be 'red' or 'blue' or ")
+    #     elif len(colors) == 2:
+    #         if colors == ["red", "blue"] or colors == ["rouge", "bleu"]
     assert(side in ["","right","left"] and form in ["","ske"])
+    assert(not(bicolor) or form=="ske")
 #    load('~/recherche/opahc/perso/tree_latex.py')
     b = "_bi" if bicolor else ""
     name = "arbre"+str(Words()(pw))+side+form+b+".tex"
@@ -452,3 +463,18 @@ def better_tree_latex(pw, side = "", form = "", bicolor = False):
     fichier.close()
     return name
 
+def to_biplan_latex(pw, color = "", bicolored = [], skeleton = False):
+    if color == "red" and bicolored == [] and skeleton:
+        return script(pw, side = "right", form = "ske", bicolor = False)
+    if color == "blue" and bicolored == [] and skeleton:
+        return script(pw, side = "left", form = "ske", bicolor = False)
+    if color == "red" and bicolored == [] and not(skeleton):
+        return script(pw, side = "right", form = "", bicolor = False)
+    if color == "blue" and bicolored == [] and not(skeleton):
+        return script(pw, side = "left", form = "", bicolor = False)
+    if color == "" and bicolored == ["red", "blue"]:
+        return script(pw, side = "right", form = "ske", bicolor = True)
+    if color == "" and bicolored == ["blue", "red"]:
+        return script(pw, side = "left", form = "ske", bicolor = True)
+    raise ValueError("Les entrée ne sont pas bonnes, voir parmis les 6 entrée possibles.")
+    

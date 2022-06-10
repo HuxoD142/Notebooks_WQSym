@@ -828,7 +828,21 @@ class PackedWord(ClonableIntArray):
         g_desc_fact = self.global_descents_factorization()
         return [pwi.packed_word_to_blue_skeleton(bicolor) for pwi in g_desc_fact[::-1]]
 
-
+    def to_biplan(self, color = "", bicolored = [], skeleton = False):
+        if color == "red" and bicolored == [] and skeleton:
+            return self.packed_word_to_red_skeleton_forest()
+        if color == "blue" and bicolored == [] and skeleton:
+            return self.packed_word_to_blue_skeleton_forest()
+        if color == "red" and bicolored == [] and not(skeleton):
+            return self.packed_word_to_labelled_forest()
+        if color == "blue" and bicolored == [] and not(skeleton):
+            return self.packed_word_to_labelled_forest_left()
+        if color == "" and bicolored == ["red", "blue"]:
+            return self.packed_word_to_red_skeleton_forest(True)
+        if color == "" and bicolored == ["blue", "red"]:
+            return self.packed_word_to_blue_skeleton_forest(True)
+        raise ValueError("Les entrée ne sont pas bonnes, voir parmis les 6 entrée possibles.")
+    
     def upgrade_max(self, l):
         """
             sage: PackedWord([1,2,1]).upgrade_max([0,1,3])
