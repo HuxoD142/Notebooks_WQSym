@@ -38,7 +38,7 @@ def tree_latex(self, colors=["red"]):
     # # use to load tikz in the preamble (one for *view* and one for *notebook*)
     from sage.misc.latex import latex
     latex.add_package_to_preamble_if_available("tikz")
-    latex.add_to_mathjax_avoid_list("tikz")
+#    latex.add_to_mathjax_avoid_list("tikz")
     ###############################################################################
     # latex environnement : TikZ
     begin_env = "\\begin{tikzpicture}[auto]\n"
@@ -432,12 +432,12 @@ def better_tree_latex(pw, side = "", form = "", bicolor = False):
             l = l.replace("]$", "$")
 
 #    l = l.replace("circle", "ellipse")
-    l = l.replace("$1$","$\,1\,$")
-    l = l.replace("$2$","$\,2\,$")
-    l = l.replace("$3$","$\,3\,$")
-    l = l.replace("$4$","$\,4\,$")
-    l = l.replace("$5$","$\,5\,$")
-    l = l.replace("$6$","$\,6\,$")
+    l = l.replace("$1$","$\\,1\\,$")
+    l = l.replace("$2$","$\\,2\\,$")
+    l = l.replace("$3$","$\\,3\\,$")
+    l = l.replace("$4$","$\\,4\\,$")
+    l = l.replace("$5$","$\\,5\\,$")
+    l = l.replace("$6$","$\\,6\\,$")
     l = l.replace("auto", "baseline={([yshift=-1ex]current bounding box.center)}")
     l = l.replace("}, {", "}\n{ ")
 
