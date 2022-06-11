@@ -645,7 +645,7 @@ class WordQuasiSymmetricFunctions(UniqueRepresentation, Parent):
         """
         return self.M()
 
-    _shorthands = tuple(['M', 'X', 'C', 'Q', 'Phi', 'O', 'P', 'R'])#, 'WP'])#, 'WO'])
+    _shorthands = tuple(['M', 'X', 'C', 'Q', 'Phi', 'O', 'P', 'R', 'GL', 'SR'])
 
     # add options to class
     class options(GlobalOptions):
@@ -2502,7 +2502,193 @@ TODO c'est pas aussi simple que ça.....
     WP = WeakOrderPrimitiveRight
 
 ######## autre base ##########  
-    ############### HuxoD End #############
+
+    class GreaterLeft(WQSymBasis_abstract):
+        r"""
+        The multiplicative basis from Q based on left weak order.
+        """
+        _prefix = "GL"
+        _basis_name = "GL"
+
+        def __init__(self, alg):
+            """
+            Initialize ``self``.
+
+            EXAMPLES::
+
+                sage: GL = algebras.WQSym(QQ).GL()
+                sage: TestSuite(O).run()  # long time
+            
+sage: WQSym = algebras.WQSym(QQ)
+sage: WQSym.inject_shorthands()
+sage: GL.options.objects = 'words'
+sage: matr_chgmt_base_osp = lambda X,Y, n: matrix([[Y(X(mu)).coefficient(sigma) for mu in OrderedSetPartitions(n)] for sigma in OrderedSetPartitions(n)])
+sage: matr_chgmt_base_osp(GL,Q,3)
+sage: matr_chgmt_base_osp(Q,GL,3)
+            """
+            WQSymBasis_abstract.__init__(self, alg)
+            
+            @cached_function
+            def new_rank(x):
+                return (SetPartition(x),x.to_packed_word())
+            
+            Q = self.realization_of().Q()
+            phi = self.module_morphism(self._GL_to_Q, codomain=Q, unitriangular = "lower", key = new_rank)
+            phi.register_as_coercion()
+            inv_phi = ~phi
+            inv_phi.register_as_coercion()
+
+            M = self.realization_of().M()
+            M.register_coercion(M.coerce_map_from(Q) * phi)
+            self.register_coercion(inv_phi * Q.coerce_map_from(M))
+            
+            
+        @cached_method
+        def _GL_to_Q(self, pw):
+            """
+sage: WQSym = algebras.WQSym(QQ)
+sage: WQSym.inject_shorthands()
+sage: O.options.objects = 'words'
+sage: Q(O[1,3,2])
+sage: Q(O[2,1,3])
+sage: Q(O[2,2,1])
+            """
+            Q = self.realization_of().Q()
+            if not pw:
+                return self.one()
+            PW = PackedWords().from_ordered_set_partition(pw)
+            PW_GL = PW.left_weak_order_greater()
+            R = Q.base_ring()
+            one = R.one()
+            return Q._from_dict({G.to_ordered_set_partition():
+                                 one for G in PW.left_weak_order_greater()}, coerce=False)
+        
+            WQSymBasis_abstract.__init__(self, alg)
+            
+        def some_elements(self):
+            """
+            Return some elements of the word quasi-symmetric functions
+            in the Homogeneous basis.
+
+            EXAMPLES::
+
+                sage: H = algebras.WQSym(QQ).H()
+                sage: H.some_elements()
+                [H[], H[{1}], H[{1, 2}], H[] + 1/2*H[{1}]]
+            """
+            u = self.one()
+            o = self([[1]])
+            s = self.base_ring().an_element()
+            return [u, o, self([[1,2]]), u + s*o]
+
+        def product_on_basis(self, x, y):
+            """
+            This is the shifted concatenating product of `x` and `y`.
+            """
+            K = self.basis().keys()
+            if not x:
+                return self.monomial(y)
+            m = max(max(part) for part in x) # The degree of x
+            x = [set(part) for part in x]
+            yshift = [[val + m for val in part] for part in y]
+            return self.monomial(K(x + yshift))
+        
+    GL = GreaterLeft
+    
+######## autre base ##########  
+
+    class SmallerRight(WQSymBasis_abstract):
+        r"""
+        The multiplicative basis from R based on right weak order.
+        """
+        _prefix = "SR"
+        _basis_name = "SR"
+
+        def __init__(self, alg):
+            """
+            Initialize ``self``.
+
+            EXAMPLES::
+
+                sage: SR = algebras.WQSym(QQ).SR()
+                sage: TestSuite(O).run()  # long time
+            
+sage: WQSym = algebras.WQSym(QQ)
+sage: WQSym.inject_shorthands()
+sage: SR.options.objects = 'words'
+sage: matr_chgmt_base_osp = lambda X,Y, n: matrix([[Y(X(mu)).coefficient(sigma) for mu in OrderedSetPartitions(n)] for sigma in OrderedSetPartitions(n)])
+sage: matr_chgmt_base_osp(SR,R,3)
+sage: matr_chgmt_base_osp(R,SR,3)
+            """
+            WQSymBasis_abstract.__init__(self, alg)
+            
+            @cached_function
+            def new_rank(x):
+                return (x.to_composition(),x.to_packed_word())
+            
+            R = self.realization_of().R()
+            phi = self.module_morphism(self._SR_to_R, codomain=R, unitriangular = "upper", key = new_rank)
+            phi.register_as_coercion()
+            inv_phi = ~phi
+            inv_phi.register_as_coercion()
+
+            M = self.realization_of().M()
+            M.register_coercion(M.coerce_map_from(R) * phi)
+            self.register_coercion(inv_phi * R.coerce_map_from(M))
+            
+            
+        @cached_method
+        def _SR_to_R(self, pw):
+            """
+sage: WQSym = algebras.WQSym(QQ)
+sage: WQSym.inject_shorthands()
+sage: O.options.objects = 'words'
+sage: R(O[1,3,2])
+sage: R(O[2,1,3])
+sage: R(O[2,2,1])
+            """
+            R = self.realization_of().R()
+            if not pw:
+                return self.one()
+            PW = PackedWords().from_ordered_set_partition(pw)
+            Ring = R.base_ring()
+            one = Ring.one()
+            return R._from_dict({G.to_ordered_set_partition():
+                                 one for G in PW.right_weak_order_smaller()}, coerce=False)
+        
+            WQSymBasis_abstract.__init__(self, alg)
+            
+        def some_elements(self):
+            """
+            Return some elements of the word quasi-symmetric functions
+            in the Homogeneous basis.
+
+            EXAMPLES::
+
+                sage: H = algebras.WQSym(QQ).H()
+                sage: H.some_elements()
+                [H[], H[{1}], H[{1, 2}], H[] + 1/2*H[{1}]]
+            """
+            u = self.one()
+            o = self([[1]])
+            s = self.base_ring().an_element()
+            return [u, o, self([[1,2]]), u + s*o]
+        
+        def product_on_basis(self, x, y):
+            """
+            This is the concatenating product of shifted `y` and `x`.
+            """
+            K = self.basis().keys()
+            if not x:
+                return self.monomial(y)
+            m = max(max(part) for part in y) # The degree of x
+            xshift = [[val + m for val in part] for part in x]
+            y = [set(part) for part in y]
+            return self.monomial(K(xshift + y))
+        
+    SR = SmallerRight
+    
+############### HuxoD End #############
 
     class StronglyFiner(WQSymBasis_abstract):
         r"""
