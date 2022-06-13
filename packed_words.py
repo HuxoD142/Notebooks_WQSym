@@ -38,10 +38,11 @@ from sage.combinat.composition import Composition
 from sage.combinat.permutation import Permutations
 from sage.combinat.permutation import to_standard
 from sage.combinat.words.finite_word import evaluation_dict
+from sage.combinat.words.word import Word
 from sage.combinat.combinatorial_map import combinatorial_map
 from sage.combinat.ordered_tree import LabelledOrderedTree
+from sage.combinat.posets.posets import Poset
 from sage.misc.lazy_attribute import lazy_attribute
-
 
 
 @add_metaclass(InheritComparisonClasscallMetaclass)
@@ -1526,6 +1527,20 @@ class PackedWord(ClonableIntArray):
         """
         return pw.is_gequal(self, side)
 
+    def pw_class(pw):
+        n=len(pw)
+        m=max(pw)
+        cl=[0]*m
+        for i,x in enumerate(pw):
+            if cl[x-1]==0:
+                cl[x-1]=max(cl)+1
+        return [cl[i-1] for i in pw]
+    
+    def pw_type(pw):
+        try:
+            return [pw.list().count(i) for i in range(1,max(pw)+1)]
+        except AttributeError:
+            return [1]*len(pw)
 #==============================================================================
 # Parent classes
 #==============================================================================
@@ -2143,3 +2158,52 @@ class PackedWords_size(PackedWordsBaseClass, UniqueRepresentation):
         """
         osp = OrderedSetPartitions(self._size).random_element()
         return self._element_constructor_(osp.to_packed_word(), check=False)
+
+    ##### pour l'affichage #####
+    def pw_by_class(self):
+        d=dict()
+        for pw in self:
+            cl=str(pw.pw_class())
+            if cl in d:
+                d[cl]+=[pw]
+            else:
+                d[cl]=[pw]
+        return d
+
+    def pw_by_type(self):
+        res={}
+        for pw in self:
+            ty=str(pw.pw_type())
+            if ty in res:
+                res[ty]+=[pw]
+            else:
+                res[ty]=[pw]
+        return res
+
+    def LWO_multi_plot(self):
+        pwn=self.pw_by_class()
+        res=[]
+        for c in pwn:
+            elms = range(len(pwn[c]))
+            fcn = lambda p,q : pwn[c][q] in pwn[c][p].left_weak_order_smaller()
+            #fcn = lambda p,q : pwn[c][q].is_lequal(pwn[c][p], side = "left")
+            
+            d={i:str(Word(pwn[c][i])) for i in elms}
+            
+            res.append(Poset((elms,fcn)).plot(element_labels=d, vertex_size=1300))
+        return res
+
+    def RWO_multi_plot(self):
+        pwn=self.pw_by_type()
+        res=[]
+        for c in pwn:
+            elms = range(len(pwn[c]))
+            fcn = lambda p,q : pwn[c][q] in pwn[c][p].right_weak_order_smaller()
+            #fcn = lambda p,q : pwn[c][q].is_lequal(pwn[c][p], side = "right")
+            
+            d={i:str(Word(pwn[c][i])) for i in elms}
+            
+            res.append(Poset((elms,fcn)).plot(element_labels=d, vertex_size=1300))
+            
+        return res
+    
