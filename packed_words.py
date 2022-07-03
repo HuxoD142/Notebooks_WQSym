@@ -728,6 +728,8 @@ class PackedWord(ClonableIntArray):
         if bicolor and not(lbl.is_particular("left")):
             def mirror(t):
                 cut, lbl = t.label()
+                if len(lbl) == 1:
+                    return t
                 return LabelledOrderedTree([mirror(ti) for ti in t[::-1]], (len(t)-cut,lbl))
             right_part = lbl.packed_word_to_blue_skeleton(bicolor)
             right_part = mirror(right_part)
@@ -816,6 +818,8 @@ class PackedWord(ClonableIntArray):
         if bicolor and not(lbl.is_particular()):
             def mirror(t):
                 cut, lbl = t.label()
+                if len(lbl) == 1:
+                    return t
                 return LabelledOrderedTree([mirror(ti) for ti in t[::-1]], (len(t)-cut,lbl))
             right_part = lbl.packed_word_to_red_skeleton(bicolor)
             right_part = mirror(right_part)
